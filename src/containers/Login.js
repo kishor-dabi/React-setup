@@ -1,9 +1,9 @@
 import React from "react";
 // import { Form, Icon, Input, Button, Spin } from "antd";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
 import * as actions from "../store/actions/auth";
-import { Button, FormControl, Form } from 'react-bootstrap'
+// import { Button, FormControl, Form } from 'react-bootstrap'
 import { Field, reduxForm } from 'redux-form'
 
 // const FormItem = Form.Item;
@@ -71,8 +71,8 @@ class NormalLoginForm extends React.Component {
 
   render() {
     console.log(this.props, "render")
-    const { getFieldDecorator } = this.props.form;
-    const { onSubmit } = this.props
+    // const { getFieldDecorator } = this.props.form;
+    // const { onSubmit } = this.props
     let errorMessage = null;
     if (this.props.error) {
       errorMessage = <p>{this.props.error.message}</p>;

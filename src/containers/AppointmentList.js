@@ -1,8 +1,8 @@
 import React from "react";
-import { List, Skeleton } from "antd";
+// import { List, Skeleton } from "antd";
 import { connect } from "react-redux";
-import Result from "../components/Result";
-import { getGradedASNTS } from "../store/actions/gradedAssignments";
+// import Result from "../components/Result";
+// import { getGradedASNTS } from "../store/actions/gradedAssignments";
 import Hoc from "../hoc/hoc";
 
 class AppointmentList extends React.PureComponent {
