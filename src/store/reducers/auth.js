@@ -8,7 +8,8 @@ const initialState = {
   is_teacher: null,
   userId: null,
   error: null,
-  loading: false
+  loading: false,
+  user: null
 };
 
 const authStart = (state, action) => {
@@ -19,12 +20,13 @@ const authStart = (state, action) => {
 };
 
 const authSuccess = (state, action) => {
-  console.log(action,"--------------------outh login 22")
+  console.log(action, "--------------------outh login 22")
   return updateObject(state, {
     token: action.user.token,
     username: action.user.username,
     error: null,
-    loading: false
+    loading: false,
+    user: action.user
   });
 };
 
@@ -37,7 +39,11 @@ const authFail = (state, action) => {
 
 const authLogout = (state, action) => {
   return updateObject(state, {
-    token: null
+    token: null,
+    user: null,
+    username: null,
+    error: null,
+    loading: false
   });
 };
 

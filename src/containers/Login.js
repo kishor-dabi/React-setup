@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import * as actions from "../store/actions/auth";
 // import { Button, FormControl, Form } from 'react-bootstrap'
 import { Field, reduxForm } from 'redux-form'
+import { Redirect } from "react-router-dom";
 
 // const FormItem = Form.Item;
 // const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
@@ -24,21 +25,37 @@ class NormalLoginForm extends React.Component {
   }
 
   submitForm = (data) => {
-    console.log(data)
+    // console.log(data)
   }
 
   handleSubmit(e) {
 
     e.preventDefault();
-    console.log(this.props)
-    console.log(e, e.persist(), this.state)
+    // console.log(this.props)
+    // console.log(e, e.persist(), this.state)
     // this.props.form.validateFields((err, values) => {
     if (this.props.valid) {
-      this.props.onAuth(this.state.email, this.state.password);
+      this.props.onAuth(this.state.email, this.state.password)
+      // .then((res) => {
+      //   console.log("thisprops", this.props, res);
+      // }).catch((err) => {
+      //   console.log(err);
+      // });
       // this.props.history.push("/");
     }
     // });
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { phase, errormessage } = nextProps
+    // const { token } = this.props
+    // console.log(nextProps, token);
+    if (errormessage && phase === 'error' && !this.state.addSnackbar) {
+      // this.setState({ errorMessage: errormessage, addSnackbar: true })      
+      // clearUserError()
+    }
+  }
+
 
   handleChangeEmail(e) {
     this.setState({ email: e.target.value })
@@ -46,7 +63,7 @@ class NormalLoginForm extends React.Component {
 
   handleChangePassword(e) {
     this.setState({ password: e.target.value })
-    console.log(this.state);
+    // console.log(this.state);
   }
 
   renderError = ({ error, touched }) => {
@@ -70,12 +87,19 @@ class NormalLoginForm extends React.Component {
   }
 
   render() {
-    console.log(this.props, "render")
+    // console.log(this.props, "render")
     // const { getFieldDecorator } = this.props.form;
-    // const { onSubmit } = this.props
+    const { token, loading } = this.props
     let errorMessage = null;
     if (this.props.error) {
       errorMessage = <p>{this.props.error.message}</p>;
+    }
+
+    if (!loading && token) {
+      return (
+        <Redirect to={`/`} />
+      )
+
     }
 
     return (
@@ -163,7 +187,9 @@ const validate = val => {
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
-    error: state.auth.error
+    error: state.auth.error,
+    token: state.auth.token,
+    user: state.auth.user
   };
 };
 

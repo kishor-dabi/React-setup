@@ -8,6 +8,12 @@ import { Navbar, NavDropdown, Button, FormControl, Form, Nav } from 'react-boots
 const { Content, Footer } = Layout;
 
 class CustomLayout extends React.Component {
+
+  logoutUser() {
+    this.props.logout();
+  }
+
+
   render() {
     return (
       <Layout className="layout">
@@ -67,11 +73,18 @@ class CustomLayout extends React.Component {
                   Logout
                 </Button>
               ) : (
-                  <Link to="/login">
-                    <Button key="2" className="ml-2">
-                      Login
-                                  </Button>
-                  </Link>
+                  <div>
+                    <Link to="/login">
+                      <Button key="2" className="ml-2">
+                        Login
+                    </Button>
+                    </Link>
+                    <Link to="/signup">
+                      <Button key="3" className="ml-2">
+                        Signup
+                                 </Button>
+                    </Link>
+                  </div>
 
                 )}
             </Navbar.Collapse>

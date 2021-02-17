@@ -1,33 +1,34 @@
 import React from "react";
-import { Form, Input, Icon, Button, Select } from "antd";
+import { Form, Icon, Button } from "antd";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as actions from "../store/actions/auth";
+import { Field, reduxForm } from "redux-form";
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+// const FormItem = Form.Item;
+// const Option = Select.Option;
 
 class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        let is_student = false;
-        if (values.userType === "student") is_student = true;
-        this.props.onAuth(
-          values.userName,
-          values.email,
-          values.password,
-          values.confirm,
-          is_student
-        );
-        // this.props.history.push("/");
-      }
-    });
+  handleSubmitForm = e => {
+    // console.log(e);
+    // e.preventDefault();
+    // console.log(this.props);
+
+    if (this.props.valid) {
+
+      this.props.onAuth(
+        e.userName,
+        e.email,
+        e.password,
+        e.confirm
+      );
+      //     // this.props.history.push("/");
+      //   }
+    }
   };
 
   handleConfirmBlur = e => {
@@ -52,24 +53,60 @@ class RegistrationForm extends React.Component {
     callback();
   };
 
+  renderError = ({ error, touched }) => {
+    // console.log(error, touched)
+    if (error && touched) {
+      return (<span className="invalid-feedback"> {error} </span>)
+    }
+    return ''
+  }
+
+  renderField = ({ input, label, name, type, meta }) => {
+    // console.log(meta);
+    return (<div>
+      <label>{label}</label>
+      <div className='form-group'>
+        <input {...input} type={type} className={meta.touched && meta.error ? 'is-invalid form-control' : 'form-control'} />
+        {this.renderError(meta)}
+      </div>
+    </div>
+    )
+  }
+
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { handleSubmit } = this.props;
 
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <FormItem>
-          {getFieldDecorator("userName", {
+      <form onSubmit={handleSubmit(this.handleSubmitForm)}>
+        <div>
+          {/* {getFieldDecorator("userName", {
             rules: [{ required: true, message: "Please input your username!" }]
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder="Username"
-            />
-          )}
-        </FormItem>
+          })( */}
 
-        <FormItem>
-          {getFieldDecorator("email", {
+          <input type="text"
+            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />} className="form-control"
+            placeholder="Username"
+          />
+
+          <Field
+            name="email"
+            component={this.renderField}
+            label="Email"
+            type="email"
+          />
+          <Field
+            name="password"
+            component={this.renderField}
+            label="Password"
+            type="password"
+          />
+
+
+          {/* )} */}
+        </div>
+
+        {/* <FormItem> */}
+        {/* {getFieldDecorator("email", {
             rules: [
               {
                 type: "email",
@@ -80,15 +117,15 @@ class RegistrationForm extends React.Component {
                 message: "Please input your E-mail!"
               }
             ]
-          })(
-            <Input
-              prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder="Email"
-            />
-          )}
-        </FormItem>
+          })( */}
+        <input type="text"
+          prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
+          placeholder="Email" className='form-control'
+        />
+        {/* )} */}
+        {/* </FormItem> */}
 
-        <FormItem>
+        {/* <FormItem>
           {getFieldDecorator("password", {
             rules: [
               {
@@ -99,13 +136,13 @@ class RegistrationForm extends React.Component {
                 validator: this.validateToNextPassword
               }
             ]
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-              type="password"
-              placeholder="Password"
-            />
-          )}
+          })( */}
+        <input
+          prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+          type="password"
+          placeholder="Password" className='form-control'
+        />
+        {/* )}
         </FormItem>
 
         <FormItem>
@@ -119,17 +156,18 @@ class RegistrationForm extends React.Component {
                 validator: this.compareToFirstPassword
               }
             ]
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-              type="password"
-              placeholder="Password"
-              onBlur={this.handleConfirmBlur}
-            />
-          )}
-        </FormItem>
+          })( */}
+        <input
+          prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+          type="password"
+          placeholder="Password" className='form-control'
+          onBlur={this.handleConfirmBlur}
+        />
+        {/* )}
+        </FormItem> */}
 
-        <FormItem>
+        {
+          /* <FormItem>
           {getFieldDecorator("userType", {
             rules: [
               {
@@ -143,22 +181,22 @@ class RegistrationForm extends React.Component {
               <Option value="teacher">Teacher</Option>
             </Select>
           )}
-        </FormItem>
+        </FormItem> */}
 
-        <FormItem>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ marginRight: "10px" }}
-          >
-            Signup
+        {/* <FormItem> */}
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ marginRight: "10px" }}
+        >
+          Signup
           </Button>
           Or
-          <NavLink style={{ marginRight: "10px" }} to="/login/">
-            login
+        <NavLink style={{ marginRight: "10px" }} to="/login/">
+          login
           </NavLink>
-        </FormItem>
-      </Form>
+        {/* </FormItem> */}
+      </form>
     );
   }
 }
@@ -172,6 +210,21 @@ const mapStateToProps = state => {
   };
 };
 
+
+const validate = val => {
+  // console.log('validate,', val)
+  let errors = {}
+  if (!val.email) {
+    errors.email = "Email is required";
+  }
+  if (!val.password) {
+    errors.password = "Password is required";
+  }
+  // console.log('validate,2', val)
+
+  return errors;
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (username, email, password1, password2, is_student) =>
@@ -181,7 +234,13 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
+let form = connect(
   mapStateToProps,
   mapDispatchToProps
 )(WrappedRegistrationForm);
+
+
+export default reduxForm({
+  form: 'SignUpForm', // a unique identifier for this form,
+  validate
+})(form)

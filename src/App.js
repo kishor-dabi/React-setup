@@ -15,10 +15,11 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.props, "---App js");
     return (
       <Router>
         <CustomLayout {...this.props}>
-          <BaseRouter />
+          <BaseRouter {...this.props} />
         </CustomLayout>
       </Router>
     );
@@ -27,7 +28,10 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
+    token: state.auth.token,
+    user: state.auth.user,
+    loading: state.auth.loading
   };
 };
 
