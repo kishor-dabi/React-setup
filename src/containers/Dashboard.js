@@ -1,18 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import * as actions from "../store/actions/dashboard";
 import Hoc from "../hoc/hoc";
 
 class Dashboard extends React.PureComponent {
 
-  componenWillMount(){
+  componenWillMount() {
 
   }
 
   componentDidMount() {
     // if (this.props.token !== undefined && this.props.token !== null) {
-      this.props.getDrList(this.props.token);
+    this.props.getDrList(this.props.token);
     // }
   }
 
@@ -29,22 +29,22 @@ class Dashboard extends React.PureComponent {
   }
 
   render() {
-console.log(this.props, "render")
+    console.log(this.props, "render")
 
     let showItemRecords = ""
     if (this.props.dr_list) {
-     
-      showItemRecords =  this.props.dr_list.map((list,i)=>{
-    
-       return (
-           <Link key={i} to={"/appointment/"+list.id}>
-               
-              <li className="list-group-item">{list.first_name} {list.last_name}</li>     
-           </Link>
-         )       
-      })     
-    }else {
-      showItemRecords = <li className="list-group-item">No Data...</li>     
+
+      showItemRecords = this.props.dr_list.map((list, i) => {
+
+        return (
+          <Link key={i} to={"/appointment/" + list.id}>
+
+            <li className="list-group-item">{list.first_name} {list.last_name}</li>
+          </Link>
+        )
+      })
+    } else {
+      showItemRecords = <li className="list-group-item">No Data...</li>
     }
 
 
@@ -53,20 +53,23 @@ console.log(this.props, "render")
         {this.props.loading ? (
           'loading.....'
         ) : (
-          <div>
-            <h3 style={{ margin: "16px 0" }}>Dr List</h3>
+            <div>
+              <h3 style={{ margin: "16px 0" }}>Dr List</h3>
+              <Link to={"create"}>
+
+                create
+            </Link>
+              <Link to={"profile/1"}>Link</Link>
 
 
+              <ul className="list-group">
+                {showItemRecords}
+
+              </ul>
 
 
-                      <ul className="list-group">
-                        { showItemRecords}
-                       
-                      </ul>
-                        
-
-          </div>
-        )}
+            </div>
+          )}
       </Hoc>
     );
   }
@@ -88,7 +91,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Dashboard);
+)(Dashboard));

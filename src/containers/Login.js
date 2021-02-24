@@ -29,13 +29,13 @@ class NormalLoginForm extends React.Component {
   }
 
   handleSubmit(e) {
-
-    e.preventDefault();
+    console.log(e);
+    // e.preventDefault();
     // console.log(this.props)
     // console.log(e, e.persist(), this.state)
     // this.props.form.validateFields((err, values) => {
     if (this.props.valid) {
-      this.props.onAuth(this.state.email, this.state.password)
+      this.props.onAuth(e.email, e.password)
       // .then((res) => {
       //   console.log("thisprops", this.props, res);
       // }).catch((err) => {
@@ -89,7 +89,7 @@ class NormalLoginForm extends React.Component {
   render() {
     // console.log(this.props, "render")
     // const { getFieldDecorator } = this.props.form;
-    const { token, loading } = this.props
+    const { token, loading, handleSubmit } = this.props
     let errorMessage = null;
     if (this.props.error) {
       errorMessage = <p>{this.props.error.message}</p>;
@@ -139,7 +139,7 @@ class NormalLoginForm extends React.Component {
                                 </NavLink>
                             </Form>*/}
                 {
-                  <form onSubmit={this.handleSubmit}>
+                  <form onSubmit={handleSubmit(this.handleSubmit)}>
                     <Field
                       name="email"
                       component={this.renderField}

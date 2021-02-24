@@ -5,6 +5,8 @@ import { NavLink } from "react-router-dom";
 import * as actions from "../store/actions/auth";
 import { Field, reduxForm } from "redux-form";
 
+import { emailFieldValidation, Required, phoneNumberPattern } from "../validation"
+
 // const FormItem = Form.Item;
 // const Option = Select.Option;
 
@@ -14,10 +16,10 @@ class RegistrationForm extends React.Component {
   };
 
   handleSubmitForm = e => {
-    // console.log(e);
+    console.log(e);
     // e.preventDefault();
     // console.log(this.props);
-
+    return
     if (this.props.valid) {
 
       this.props.onAuth(
@@ -83,15 +85,17 @@ class RegistrationForm extends React.Component {
             rules: [{ required: true, message: "Please input your username!" }]
           })( */}
 
-          <input type="text"
-            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />} className="form-control"
-            placeholder="Username"
+          <Field
+            name="first_name"
+            component={this.renderField}
+            label="First Name"
+            type="name" required="true"
           />
 
           <Field
             name="email"
             component={this.renderField}
-            label="Email"
+            label="Email" validate={[emailFieldValidation, Required]}
             type="email"
           />
           <Field
@@ -100,90 +104,17 @@ class RegistrationForm extends React.Component {
             label="Password"
             type="password"
           />
+          <Field
+            name="phone_number" validate={phoneNumberPattern}
+            component={this.renderField}
+            label="Phone"
+            type="text"
+          />
 
 
-          {/* )} */}
+
         </div>
 
-        {/* <FormItem> */}
-        {/* {getFieldDecorator("email", {
-            rules: [
-              {
-                type: "email",
-                message: "The input is not valid E-mail!"
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!"
-              }
-            ]
-          })( */}
-        <input type="text"
-          prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
-          placeholder="Email" className='form-control'
-        />
-        {/* )} */}
-        {/* </FormItem> */}
-
-        {/* <FormItem>
-          {getFieldDecorator("password", {
-            rules: [
-              {
-                required: true,
-                message: "Please input your password!"
-              },
-              {
-                validator: this.validateToNextPassword
-              }
-            ]
-          })( */}
-        <input
-          prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-          type="password"
-          placeholder="Password" className='form-control'
-        />
-        {/* )}
-        </FormItem>
-
-        <FormItem>
-          {getFieldDecorator("confirm", {
-            rules: [
-              {
-                required: true,
-                message: "Please confirm your password!"
-              },
-              {
-                validator: this.compareToFirstPassword
-              }
-            ]
-          })( */}
-        <input
-          prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-          type="password"
-          placeholder="Password" className='form-control'
-          onBlur={this.handleConfirmBlur}
-        />
-        {/* )}
-        </FormItem> */}
-
-        {
-          /* <FormItem>
-          {getFieldDecorator("userType", {
-            rules: [
-              {
-                required: true,
-                message: "Please select a user!"
-              }
-            ]
-          })(
-            <Select placeholder="Select a user type">
-              <Option value="student">Student</Option>
-              <Option value="teacher">Teacher</Option>
-            </Select>
-          )}
-        </FormItem> */}
-
-        {/* <FormItem> */}
         <Button
           type="primary"
           htmlType="submit"
@@ -212,14 +143,20 @@ const mapStateToProps = state => {
 
 
 const validate = val => {
-  // console.log('validate,', val)
+  console.log('validate,', val)
   let errors = {}
   if (!val.email) {
     errors.email = "Email is required";
   }
+  if (!val.first_name) {
+    errors.first_name = "First Name is required";
+  }
   if (!val.password) {
     errors.password = "Password is required";
   }
+  // if (!val.password) {
+  //   errors.password = "Password is required";
+  // }
   // console.log('validate,2', val)
 
   return errors;

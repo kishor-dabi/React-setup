@@ -1,103 +1,106 @@
 import React from "react";
 import { Layout } from "antd";
-import { Link, withRouter } from "react-router-dom";
+import { Link, withRouter, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../store/actions/auth";
 import { Navbar, NavDropdown, Button, FormControl, Form, Nav } from 'react-bootstrap'
+import { Component } from "react";
+import BaseRouter from "../routes";
 
 const { Content, Footer } = Layout;
 
-class CustomLayout extends React.Component {
-
-  logoutUser() {
-    this.props.logout();
-  }
-
-
+class CustomLayout extends Component {
   render() {
+
     return (
-      <Layout className="layout">
-        {/* <Header>
-                 <div className="logo" />
-                 <Menu
-                   theme="dark"
-                   mode="horizontal"
-                   defaultSelectedKeys={["2"]}
-                   style={{ lineHeight: "64px" }}
-                 >
-                   
-                 </Menu>
-               </Header>*/}
-        <Content >
-          {/*<Breadcrumb style={{ margin: "16px 0" }}>
-                      <Breadcrumb.Item>
-                        <Link to="/">Home</Link>
-                      </Breadcrumb.Item>
-                      {this.props.token !== null ? (
-                        <Breadcrumb.Item>
-                          <Link to={`/profile/${this.props.userId}`}>Profile</Link>
-                        </Breadcrumb.Item>
-                      ) : null}
-                      {this.props.token !== null && this.props.is_teacher ? (
-                        <Breadcrumb.Item>
-                          <Link to="/create">Create</Link>
-                        </Breadcrumb.Item>
-                      ) : null}
-                    </Breadcrumb>*/}
+      <div>
 
-
-
-          <Navbar bg="light" expand="lg">
-
-            <Link to='/'> <Navbar.Brand >React-Bootstrap</Navbar.Brand></Link>
-
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto">
-                <Nav.Link href="#home">Home</Nav.Link>
-                <Nav.Link href="#link">Link</Nav.Link>
-                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                </NavDropdown>
-              </Nav>
-              <Form inline>
-                <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                <Button variant="outline-success">Search</Button>
-              </Form>
-              {this.props.isAuthenticated ? (
-                <Button key="2" onClick={this.props.logout} className="ml-2">
-                  Logout
-                </Button>
-              ) : (
-                  <div>
-                    <Link to="/login">
-                      <Button key="2" className="ml-2">
-                        Login
+        {/* {this.props.isAuthenticated ? (
+          <Button key="2" onClick={this.props.logout} className="ml-2">
+            Logout
+          </Button>
+        ) : (
+            <div>
+              <Link to="/login">
+                <Button key="2" className="ml-2">
+                  Login
                     </Button>
-                    </Link>
-                    <Link to="/signup">
-                      <Button key="3" className="ml-2">
-                        Signup
+              </Link>
+              <Link to="/signup">
+                <Button key="3" className="ml-2">
+                  Signup
                                  </Button>
-                    </Link>
-                  </div>
+              </Link>
+            </div>
 
-                )}
-            </Navbar.Collapse>
-          </Navbar>
+          )}
+        <Link to='/'> React-Bootstrap</Link> */}
+        <Layout className="layout">
 
-          <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
-            {this.props.children}
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          My App
+          <Content >
+
+
+
+            <Switch>
+              <Navbar bg="light" expand="lg">
+
+                <Link to='' > <Navbar.Brand >React-Bootstrap</Navbar.Brand></Link>
+
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                  <Nav className="mr-auto">
+                    <Nav.Link>
+                      <Link to="/create"> Home </Link>
+
+                    </Nav.Link>
+                    <Nav.Link href="#link">Link</Nav.Link>
+                    <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                      <NavDropdown.Item href="">Action</NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                    </NavDropdown>
+                  </Nav>
+                  <Form inline>
+                    <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                    <Button variant="outline-success">Search</Button>
+                  </Form>
+                  {this.props.isAuthenticated ? (
+                    <Button key="2" onClick={this.props.logout} className="ml-2">
+                      Logout
+                    </Button>
+                  ) : (
+                      <div>
+                        <Link to="/login">
+                          <Button key="2" className="ml-2">
+                            Login
+                    </Button>
+                        </Link>
+                        <Link to="/signup">
+                          <Button key="3" className="ml-2">
+                            Signup
+                                 </Button>
+                        </Link>
+                      </div>
+
+                    )}
+                </Navbar.Collapse>
+              </Navbar>
+            </Switch>
+            <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
+              {/* {this.props.children} */}
+              <BaseRouter {...this.props} />
+            </div>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            My App
         </Footer>
-      </Layout>
+        </Layout>
+        {/* <div>
+          {this.props.children}
+        </div> */}
+      </div>
     );
   }
 }

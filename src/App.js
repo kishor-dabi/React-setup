@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import BaseRouter from "./routes";
 // import "antd/dist/antd.css";
+import 'popper.js/dist/popper.js';
+import 'jquery/dist/jquery.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 import * as actions from "./store/actions/auth";
@@ -17,11 +19,11 @@ class App extends Component {
   render() {
     console.log(this.props, "---App js");
     return (
-      <Router>
+      <BrowserRouter>
         <CustomLayout {...this.props}>
-          <BaseRouter {...this.props} />
+          {/* <BaseRouter {...this.props} /> */}
         </CustomLayout>
-      </Router>
+      </BrowserRouter>
     );
   }
 }

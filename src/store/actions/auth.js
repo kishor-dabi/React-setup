@@ -15,9 +15,10 @@ export const authSuccess = user => {
 };
 
 export const authFail = error => {
+  console.log(JSON.stringify(error), error.response);
   return {
     type: actionTypes.AUTH_FAIL,
-    error: error
+    error: error.response.data
   };
 };
 
