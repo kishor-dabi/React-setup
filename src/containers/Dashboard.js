@@ -85,9 +85,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  console.log('-------------------------')
   return {
-    getDrList: token => dispatch(actions.getDrList(token))
+    getDrList: token => dispatch(actions.getDrList(token)),
+    // getUserProfile :() => dispatch(actions.getUserProfile())
   };
 };
 

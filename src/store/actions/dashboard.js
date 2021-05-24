@@ -1,5 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
 import * as actionTypes from "./actionTypes";
+import { Axios, AxiosNoAUTH }   from "../utility"
 
 export const getDrListStart = () => {
   return {
@@ -25,8 +26,8 @@ export const getDrList = (token) => {
   console.log("get dr list")
   return dispatch => {
     dispatch(getDrListStart());
-    axios
-      .get("http://127.0.0.1:8000/api/users-list")
+    Axios
+      .get("users-list")
       .then(res => {
         console.log(res)
         dispatch(getDrSuccess(res.data));

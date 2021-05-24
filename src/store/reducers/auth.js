@@ -48,6 +48,64 @@ const authLogout = (state, action) => {
   });
 };
 
+const clearError = (state, action) => {
+  return updateObject(state, {
+    error: null
+  });
+};
+
+
+const signupStart = (state, action) => {
+  return updateObject(state, {
+    error: null,
+    loading: true
+  });
+};
+
+const signupSuccess = (state, action) => {
+  console.log(action, "--------------------outh signup success")
+  return updateObject(state, {
+    token: action.user.token,
+    // username: action.user.username,
+    error: null,
+    loading: false,
+    // user: action.user
+  });
+};
+
+const signupFail = (state, action) => {
+  console.log(state, action);
+  return updateObject(state, {
+    error: action.error,
+    loading: false
+  });
+};
+
+
+const getProfileStart = (state, action) => {
+  return updateObject(state, {
+    error: null,
+    loading: true
+  });
+};
+
+const getProfileSuccess = (state, action) => {
+  console.log(action, "--------------------get profile")
+  return updateObject(state, {
+    user: action.user
+  });
+};
+
+const getProfileFail = (state, action) => {
+  console.log(state, action);
+  return updateObject(state, {
+    error: action.error,
+    loading: false
+  });
+};
+
+
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -56,8 +114,23 @@ const reducer = (state = initialState, action) => {
       return authSuccess(state, action);
     case actionTypes.AUTH_FAIL:
       return authFail(state, action);
+    case actionTypes.SIGNUP_START:
+      return signupStart(state, action);
+    case actionTypes.SIGNUP_SUCCESS:
+      return signupSuccess(state, action);
+    case actionTypes.SIGNUP_FAIL:
+      return signupFail(state, action);
     case actionTypes.AUTH_LOGOUT:
       return authLogout(state, action);
+    case actionTypes.CLEAR_ERROR:
+      return clearError(state, action);
+    case actionTypes.GET_USER_PROFILE_START:
+      return getProfileStart(state, action);
+    case actionTypes.GET_USER_PROFILE_SUCCESS:
+      return getProfileSuccess(state, action);
+    case actionTypes.GET_USER_PROFILE_FAIL:
+      return getProfileFail(state, action);
+          
     default:
       return state;
   }
