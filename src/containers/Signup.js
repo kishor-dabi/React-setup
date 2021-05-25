@@ -140,7 +140,7 @@ class RegistrationForm extends React.Component {
             </div>
 
             <Button
-              type="primary"
+              type="primary" className="btn btn-primary"
               htmlType="submit"
               style={{ marginRight: "10px" }}
               >

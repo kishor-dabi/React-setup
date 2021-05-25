@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import * as actions from "../store/actions/dashboard";
+import * as Authactions from "../store/actions/auth";
 import Hoc from "../hoc/hoc";
 
 class Dashboard extends React.PureComponent {
@@ -12,7 +13,8 @@ class Dashboard extends React.PureComponent {
 
   componentDidMount() {
     // if (this.props.token !== undefined && this.props.token !== null) {
-    this.props.getDrList(this.props.token);
+    // this.props.getDrList(this.props.token);
+    this.props.getUserProfile();
     // }
   }
 
@@ -20,6 +22,7 @@ class Dashboard extends React.PureComponent {
     if (newProps.token !== this.props.token) {
       if (newProps.token !== undefined && newProps.token !== null) {
         this.props.getDrList(newProps.token);
+        this.props.getUserProfile();
       }
     }
   }
@@ -87,7 +90,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getDrList: token => dispatch(actions.getDrList(token)),
-    // getUserProfile :() => dispatch(actions.getUserProfile())
+    getUserProfile :() => dispatch(Authactions.getUserProfile())
   };
 };
 
