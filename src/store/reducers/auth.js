@@ -1,15 +1,17 @@
+import actions from "redux-form/lib/actions";
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
 
 const initialState = {
   token: null,
   username: null,
-  is_student: null,
-  is_teacher: null,
   userId: null,
   error: null,
   loading: false,
-  user: null
+  user: null,
+  isSignupSuccess:false,
+  successMessage: "",
+  isVerificationSuccess:false
 };
 
 const authStart = (state, action) => {
@@ -20,7 +22,6 @@ const authStart = (state, action) => {
 };
 
 const authSuccess = (state, action) => {
-  console.log(action, "--------------------outh login 22")
   return updateObject(state, {
     token: action.user.token,
     username: action.user.username,
@@ -31,7 +32,6 @@ const authSuccess = (state, action) => {
 };
 
 const authFail = (state, action) => {
-  console.log(state, action);
   return updateObject(state, {
     error: action.error,
     loading: false
@@ -50,7 +50,10 @@ const authLogout = (state, action) => {
 
 const clearError = (state, action) => {
   return updateObject(state, {
-    error: null
+    error: null,
+    loading: false,
+    successMessage: null,
+    isVerificationSuccess:false
   });
 };
 
@@ -58,26 +61,57 @@ const clearError = (state, action) => {
 const signupStart = (state, action) => {
   return updateObject(state, {
     error: null,
-    loading: true
+    loading: true,
+    isSignupSuccess:false
   });
 };
 
 const signupSuccess = (state, action) => {
-  console.log(action, "--------------------outh signup success")
   return updateObject(state, {
-    token: action.user.token,
+    // token: action.user.token,
     // username: action.user.username,
-    error: null,
+    successMessage: action.message,
     loading: false,
-    // user: action.user
+    isSignupSuccess: true
   });
 };
 
 const signupFail = (state, action) => {
-  console.log(state, action);
+  // console.log("signup fail", action);
   return updateObject(state, {
     error: action.error,
-    loading: false
+    loading: false,
+    isSignupSuccess: false
+  });
+};
+
+
+const signupOTPverifyStart = (state, action) => {
+  return updateObject(state, {
+    error: null,
+    loading: true,
+    successMessage:null,
+    // isSignupSuccess:false
+  });
+};
+
+const signupOTPverifySuccess = (state, action) => {
+  console.log(action);
+  return updateObject(state, {
+
+    successMessage: action.message,
+    loading: false,
+    isSignupSuccess: false,
+    isVerificationSuccess: true
+  });
+};
+
+const signupOTPverifyFail = (state, action) => {
+  return updateObject(state, {
+    error: action.error,
+    loading: false,
+    isSignupSuccess: false,
+    isVerificationSuccess:false
   });
 };
 
@@ -90,14 +124,13 @@ const getProfileStart = (state, action) => {
 };
 
 const getProfileSuccess = (state, action) => {
-  console.log(action, "--------------------get profile")
   return updateObject(state, {
-    user: action.user
+    user: action.user,
+    loading: false
   });
 };
 
 const getProfileFail = (state, action) => {
-  console.log(state, action);
   return updateObject(state, {
     error: action.error,
     loading: false
@@ -130,6 +163,12 @@ const reducer = (state = initialState, action) => {
       return getProfileSuccess(state, action);
     case actionTypes.GET_USER_PROFILE_FAIL:
       return getProfileFail(state, action);
+    case actionTypes.SIGNUP_OTPVERIFY_START:
+      return signupOTPverifyStart(state, action);
+    case actionTypes.SIGNUP_OTPVERIFY_SUCCESS:
+      return signupOTPverifySuccess(state, action);
+    case actionTypes.SIGNUP_OTPVERIFY_FAIL:
+      return signupOTPverifyFail(state, action);
           
     default:
       return state;

@@ -19,7 +19,7 @@ const isLocalhost = Boolean(
 );
 
 export default function register() {
-  if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+  // if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
     if (publicUrl.origin !== window.location.origin) {
@@ -49,7 +49,7 @@ export default function register() {
         registerValidSW(swUrl);
       }
     });
-  }
+  // }
 }
 
 function registerValidSW(swUrl) {
@@ -111,7 +111,8 @@ function checkValidServiceWorker(swUrl) {
 export function unregister() {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.ready.then(registration => {
-      registration.unregister();
+      // registration.unregister();
+      registration.register();
     });
   }
 }

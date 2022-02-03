@@ -1,12 +1,9 @@
 import React from "react";
-// import { Form, Icon, Input, Button, Spin } from "antd";
 import { connect } from "react-redux";
-// import { NavLink } from "react-router-dom";
 import * as actions from "../store/actions/auth";
-// import { Button, FormControl, Form } from 'react-bootstrap'
 import { Field, reduxForm } from 'redux-form'
 import { Redirect } from "react-router-dom";
-
+import { CircularProgress, TextField } from "@material-ui/core"
 // const FormItem = Form.Item;
 // const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
@@ -29,30 +26,19 @@ class NormalLoginForm extends React.Component {
   }
 
   handleSubmit(e) {
-    console.log(e);
-    // e.preventDefault();
-    // console.log(this.props)
-    // console.log(e, e.persist(), this.state)
-    // this.props.form.validateFields((err, values) => {
     if (this.props.valid) {
-      this.props.onAuth(e.email, e.password)
-      // .then((res) => {
-      //   console.log("thisprops", this.props, res);
-      // }).catch((err) => {
-      //   console.log(err);
-      // });
-      // this.props.history.push("/");
+      this.props.parentCallback(e)
+      // this.props.onAuth(e.email, e.password)
     }
     // });
   };
 
   componentWillReceiveProps(nextProps) {
-    const { phase, errormessage } = nextProps
-    // const { token } = this.props
-    // console.log(nextProps, token);
-    if (errormessage && phase === 'error' && !this.state.addSnackbar) {
-      // this.setState({ errorMessage: errormessage, addSnackbar: true })      
-      // clearUserError()
+
+    if (nextProps.successMessage) {
+      // this.setState({error: this.props.successMessage, isOpenDialog: true })
+
+
     }
   }
 
@@ -67,9 +53,8 @@ class NormalLoginForm extends React.Component {
   }
 
   renderError = ({ error, touched }) => {
-    // console.log(error, touched)
     if (error && touched) {
-      return (<span className="invalid-feedback"> {error} </span>)
+      return (<span className=""> {error} </span>)
     }
     return ''
   }
@@ -77,9 +62,13 @@ class NormalLoginForm extends React.Component {
   renderField = ({ input, label, name, type, meta }) => {
 
     return (<div>
-      <label>{label}</label>
+      {/* <label>{label}</label> */}
       <div className='form-group'>
-        <input {...input} type={type} className={meta.touched && meta.error ? 'is-invalid form-control' : 'form-control'} />
+
+        {/* <TextField error={this.renderError(meta) == '' ? false : true} id="standard-error-helper-text" fullWidth={true}
+          {...input} type={type} label={label} helperText={this.renderError(meta)}
+        /> */}
+        <input className={meta.touched && meta.error ? 'is-invalid form-control' : 'form-control'} />
         {this.renderError(meta)}
       </div>
     </div>
@@ -87,13 +76,13 @@ class NormalLoginForm extends React.Component {
   }
 
   render() {
-    // console.log(this.props, "render")
     // const { getFieldDecorator } = this.props.form;
     const { token, loading, handleSubmit } = this.props
     let errorMessage = null;
     if (this.props.error) {
       errorMessage = <p>{this.props.error.message}</p>;
     }
+
 
     if (!loading && token) {
       return (
@@ -107,11 +96,10 @@ class NormalLoginForm extends React.Component {
         <div className="col-sm-8 col-sm offset-2">
           {errorMessage}
           {this.props.loading ? (
-
-            'Loading...'
+            <CircularProgress />
           ) : (
-              <div className="form-group">
-                {/* <Form onSubmit={this.handleSubmit} className="login-form">
+            <div className="form-group">
+              {/* <Form onSubmit={this.handleSubmit} className="login-form">
                                 
                                  <label>Email</label>
                  <div className='form-group'>
@@ -138,39 +126,41 @@ class NormalLoginForm extends React.Component {
                                   signup
                                 </NavLink>
                             </Form>*/}
-                {
-                  <form onSubmit={handleSubmit(this.handleSubmit)}>
-                    <Field
-                      name="email"
-                      component={this.renderField}
-                      label="Email"
-                      onChange={this.handleChangeEmail}
-                      type="email"
-                    />
-                    <Field
-                      name="password"
-                      component={this.renderField}
-                      label="Password"
-                      onChange={this.handleChangePassword}
-                      type="password"
-                    />
-                    <div>
-                      <button type="submit" className="btn btn-primary">
-                        Login
-                        </button>
+              {
+                <form onSubmit={handleSubmit(this.handleSubmit)}>
 
-                    </div>
-                  </form>}
-              </div>
-            )}
+
+                  <Field
+                    name="email"
+                    component={this.renderField}
+                    label="Email"
+                    onChange={this.handleChangeEmail}
+                    type="email"
+                  />
+                  <Field
+                    name="password"
+                    component={this.renderField}
+                    label="Password"
+                    onChange={this.handleChangePassword}
+                    type="password"
+                  />
+                  <div>
+                    <button type="submit" className="btn btn-primary">
+                      Login
+                    </button>
+
+                  </div>
+                </form>}
+            </div>
+          )}
         </div>
+
       </div>
     );
   }
 }
 
 const validate = val => {
-  // console.log('validate,', val)
   let errors = {}
   if (!val.email) {
     errors.email = "Email is required";
@@ -178,7 +168,6 @@ const validate = val => {
   if (!val.password) {
     errors.password = "Password is required";
   }
-  // console.log('validate,2', val)
 
   return errors;
 }

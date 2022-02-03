@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch'
+// import fetch from 'isomorphic-fetch'
 import axios from "axios";
 
 
@@ -47,10 +47,12 @@ export default (url, options) => {
 }
  */
 
-export const  Axios = axios.create({
+import * as data from "./reducers/auth"
+
+export const Axios = axios.create({
   baseURL: 'http://localhost:8888/api/',
   timeout: 1200000,
-  headers: {'Authorization': localStorage.getItem('user') ? 'bearer '+ JSON.parse(localStorage.getItem('user')).token : null }
+  headers: { 'Authorization': localStorage.getItem('user') ? 'bearer ' + JSON.parse(localStorage.getItem('user')).token : null }
 });
 
 export const AxiosNoAUTH = axios.create({

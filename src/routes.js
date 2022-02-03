@@ -4,31 +4,45 @@ import Hoc from "./hoc/hoc";
 import createHistory from 'history/createBrowserHistory'
 import PropTypes from "prop-types"
 
-import Login from "./containers/Login";
-import Signup from "./containers/Signup";
-import Profile from "./containers/Profile";
-// import AssignmentList from "./containers/AssignmentList";
-import AssignmentDetail from "./containers/AssignmentDetail";
-import AssignmentCreate from "./containers/AssignmentCreate";
-import Dashboard from "./containers/Dashboard";
-import AppointmentList from "./containers/AppointmentList";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Profile from "./components/Profile";
+import Dashboard from "./components/Dashboard";
+import AdminCreate from "./components/AdminCreate";
 import { Component } from "react";
-import Layout from "./containers/Layout";
+import Layout from "./components/Layout";
 import { Button } from "bootstrap";
+import Users from "./components/Users";
+// import DoctorsList from "./components/DoctorsList";
+// import DoctorDetails from "./components/DoctorDetails";
 
 // import { render } from "react-dom";
 const history = createHistory()
 
+let redirectURL = ""
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  // console.log(rest, component, this.props);
-  const isAuthed = rest.isAuthenticated
+  // console.log(rest);
+  const isAuthed = rest.isAuthenticated;
+  const user_type = rest.user ? rest.user.user ? rest.user.user.user_type : null : null;
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectUrl = rest.location.state ? rest.location.state.from.pathname : '' //urlParams.get('redirectUrl');
+  // console.log(redirectURL, "redirectUrl", rest.location.state ? rest.location.state.from.pathname :'');
 
-  console.log(isAuthed, "isAuthed");
   return (
     <Route {...rest} exact
       render={(props) => (
         isAuthed ? (
+
+          /*   rest.location.state ? (rest.location.state.from.pathname ? 
+
+            <Redirect
+            to={{
+              pathname: rest.location.state ? rest.location.state.from.pathname : "",
+              state: { from: props.location }
+            }}
+          /> :'') 
+              : */
           <div>
             <Component {...props} />
           </div>
@@ -37,6 +51,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             <Redirect
               to={{
                 pathname: '/login',
+                search: window.location.pathname ? "?redirectUrl=" + window.location.pathname : "",
                 state: { from: props.location }
               }}
             />
@@ -47,17 +62,44 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   )
 }
 
-// const PrivateRoute = ({ component: Component, ...rest }) => (
-//   <Route {...rest} render={props => (
-//     rest.isAuthenticated
-//       ? <Component {...props} />
-//       : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-//   )} />
-// )
-
 PrivateRoute.propTypes = {
   component: PropTypes.oneOfType([
-    PropTypes.func
+    PropTypes.any
+  ]).isRequired,
+  location: PropTypes.object
+}
+
+const SuperAdminRoute = ({ component: Component, ...rest }) => {
+  let isAuthed = rest.isAuthenticated;
+  let user_type = rest.user ? (rest.user ? rest.user.user_type : null) : null;
+
+
+  // console.log(isAuthed, "isAuthed", user_type , rest.user);
+  return (
+    <Route {...rest} exact
+      render={(props) => (
+        isAuthed && user_type == 1 ? (
+          <div>
+            <Component {...props} />
+          </div>
+        ) :
+          (
+            <Redirect
+              to={{
+                pathname: '/',
+                state: { from: props.location }
+              }}
+            />
+
+          )
+      )}
+    />
+  )
+}
+
+SuperAdminRoute.propTypes = {
+  component: PropTypes.oneOfType([
+    PropTypes.any
   ]).isRequired,
   location: PropTypes.object
 }
@@ -73,7 +115,6 @@ class BaseRouter extends Component {
 
   componentWillMount() {
 
-
     setTimeout(() => {
       this.setState({ updated: true })
     }, 2000)
@@ -87,15 +128,20 @@ class BaseRouter extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { user, token, loading } = nextProps
-    console.log(user, token, loading, "------------------------------------------------");
     // this._checkForValidUserState(user, token, phase)
+  }
+
+  checkRedirectUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirectUrl');
+    if (redirectUrl) {
+      return redirectUrl;
+    }
   }
 
 
   render() {
-    console.log(this.props, "App route");
     const currentLocation = window.location.pathname
-    console.log(currentLocation,);
     const {
       user,
       token,
@@ -103,11 +149,7 @@ class BaseRouter extends Component {
     } = this.props
 
     let loginUserData = localStorage.getItem("Authorization")
-    // if (window.location.pathname !== "/login" && !loginUserData) {
-    //   console.log("user auth redirect");
-    //   localStorage.clear()
-    //   history.push('/login')
-    // }
+
     if (token && !user) {
 
       if (phase === "LOADING") {
@@ -118,6 +160,7 @@ class BaseRouter extends Component {
         )
       }
     }
+
     return (
       <Hoc>
         {/* <Layout {...this.props} /> */}
@@ -146,19 +189,23 @@ class BaseRouter extends Component {
 
         {
           this.state.updated ? (
-            <div>
-              {/* <Switch>
-                  <React.Fragment> */}
-              <PrivateRoute exact path="/" {...this.props} component={Dashboard} />
-              <PrivateRoute exact path="/create/" {...this.props} component={AssignmentCreate} />
-              <Route exact path="/login/" {...this.props} component={Login} />
-              <Route exact path="/signup/" {...this.props} component={Signup} />
-              <PrivateRoute path="/assignments/:id" {...this.props} component={AssignmentDetail} />
-              <PrivateRoute path="/profile/:id" {...this.props} component={Profile} />
-              <PrivateRoute path="/appointment/:id" {...this.props} component={AppointmentList} />
-              {/* </React.Fragment>
-                </Switch> */}
-            </div>
+
+            (
+              /*   this.checkRedirectUrl() ? 
+                  <Redirect to={this.checkRedirectUrl()}/>
+                : */
+
+              <Switch>
+                <React.Fragment>
+                  <Route exact path="/" {...this.props} component={Dashboard} />
+                  <PrivateRoute path="/profile" {...this.props} component={Profile} />
+                  <Route exact path="/login/" {...this.props} component={Login} />
+                  <Route exact path="/signup/" {...this.props} component={Signup} />
+                  <PrivateRoute path="/users" {...this.props} component={Users} />
+                  <SuperAdminRoute path="/new-admin" {...this.props} component={AdminCreate} />
+
+                </React.Fragment>
+              </Switch>)
 
           ) :
             "loading ..."

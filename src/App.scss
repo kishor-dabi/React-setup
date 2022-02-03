@@ -1,1 +1,28 @@
 @import "~bootstrap/scss/bootstrap";
+.flexGrow{
+    flex-grow:1
+}
+body, * {
+    // font-family: 'Overlock',"Open Sans", sans-serif;
+    font-family: Work Sans, sans-serif;
+    font-weight: 400;
+}
+
+// home page css
+.home-page-image{
+    height: 143px;
+    width: 100%;
+}
+
+.vc_separator {
+    .vc_sep_holder {
+    height: 1px;
+    position: relative;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-width: 10%;
+}
+}
+ 

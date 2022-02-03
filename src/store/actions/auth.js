@@ -1,7 +1,8 @@
 // import axios from "axios";
 import * as actionTypes from "./actionTypes";
-import { conf } from "../../components/config/config"
+import { conf } from "../../config/config"
 import { Axios, AxiosNoAUTH }   from "../utility"
+import axios from "axios";
 
 
 export const authStart = () => {
@@ -18,7 +19,6 @@ export const authSuccess = user => {
 };
 
 export const authFail = error => {
-  console.log(JSON.stringify(error), error.response);
   return {
     type: actionTypes.AUTH_FAIL,
     error: error.response ? error.response.data : null
@@ -33,17 +33,37 @@ export const signupStart = () => {
   };
 };
 
-export const signupSuccess = user => {
+export const signupSuccess = data => {
   return {
     type: actionTypes.SIGNUP_SUCCESS,
-    // user
+    message: data ? data.message :  "Success"
   };
 };
 
 export const signupFail = error => {
-  console.log(JSON.stringify(error), error.response);
   return {
     type: actionTypes.SIGNUP_FAIL,
+    error: error.response ? (error.response.data ? error.response.data.message : "failed"): null
+  };
+};
+
+
+export const signupOTPverifyStart = () => {
+  return {
+    type: actionTypes.SIGNUP_OTPVERIFY_START
+  };
+};
+
+export const signupOTPverifySuccess = data => {
+  return {
+    type: actionTypes.SIGNUP_OTPVERIFY_SUCCESS,
+    message: data ? data.message : "Success"
+  };
+};
+
+export const signupOTPverifyFail = error => {
+  return {
+    type: actionTypes.SIGNUP_OTPVERIFY_FAIL,
     error: error.response ? (error.response.data ? error.response.data.message : "failed"): null
   };
 };
@@ -62,7 +82,6 @@ export const getProfileSuccess = user => {
 };
 
 export const getProfileFail = error => {
-  console.log(JSON.stringify(error), error.response);
   return {
     type: actionTypes.GET_USER_PROFILE_FAIL,
     error: error.response ? (error.response.data ? error.response.data.message : "failed"): null
@@ -80,6 +99,7 @@ export const clearError = () => {
 export const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("Authorzation");
+  // window.location.reload();
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -94,20 +114,18 @@ export const checkAuthTimeout = expirationTime => {
 };
 
 export const authLogin = (username, password) => {
-  // console.log(username,password)
   return dispatch => {
     dispatch(authStart());
     AxiosNoAUTH
-      .post(`${conf.base_api_url}api/login`, {
+      .post(`${conf.base_api_url}login`, {
         email: username,
         password: password
       })
       .then(res => {
-        console.log(res, "login res------------------------")
         const user = {
           token: res.data.response.token,
           username,
-          // userId: res.data.user,
+          user: res.data.response.user_data,
           // is_student: res.data.user_type.is_student,
           // is_teacher: res.data.user_type.is_teacher,
           // expirationDate: new Date(new Date().getTime() + 3600 * 1000)
@@ -131,7 +149,8 @@ export const authSignup = (
   full_name,
   email,
   password,
-  phone_number
+  phone_number,
+  user_type
 ) => {
   return dispatch => {
     dispatch(signupStart());
@@ -140,6 +159,7 @@ export const authSignup = (
       email,
       password,
       phone_number,
+      user_type
     };
 
     
@@ -171,19 +191,13 @@ export const authSignup = (
 
 
       AxiosNoAUTH
-      .post(`${conf.base_api_url}api/signup`, user)
+      .post(`${conf.base_api_url}signup`, user  )
       .then(res => {
-        const user = {
-          token: res.data.key,
-          full_name,
-          userId: res.data.user,
-          // is_student,
-          // is_teacher: !is_student,
-          expirationDate: new Date(new Date().getTime() + 3600 * 1000)
-        };
-        localStorage.setItem("user", JSON.stringify(user));
-        dispatch(signupSuccess({message:res.message}));
+        dispatch(signupSuccess({message:res.data.message}));
         // dispatch(checkAuthTimeout(3600));
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 4000);
       })
       .catch(err => {
         dispatch(signupFail(err));
@@ -194,15 +208,45 @@ export const authSignup = (
   };
 };
 
+export const signupOPTVerify = (data) => {
+  return dispatch => {
+    dispatch(signupOTPverifyStart());
+    AxiosNoAUTH
+      .post(`${conf.base_api_url}verify-signup-otp`, {
+        varification_for:1,
+        otp:data.otp,
+        email:data.email
+      })
+      .then(res => {
+        
+        dispatch(signupOTPverifySuccess({message:res.data.message}));
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 4000);
+      })
+      .catch(err => {
+        dispatch(signupOTPverifyFail(err));
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 4000);
+      });
+  };
+};
+
+export const clearMessage = () => {
+  return dispatch =>{
+    dispatch(clearError())
+  };
+};
+
 
 export const getUserProfile = () => {
-  // console.log(username,password)
   return dispatch => {
     dispatch(getProfileStart());
-    Axios
-      .get(`/user/user-profile`)
+    // Axios
+    axios
+      .get(`${conf.base_api_url}user/user-profile`, {headers: {'Authorization': 'bearer '+ localStorage.getItem('user') ? 'bearer '+ JSON.parse(localStorage.getItem('user')).token : null }    })
       .then(res => {
-        console.log(res, "profile res------------------------")
         const user = res.data.response;
         dispatch(getProfileSuccess(user));
         // dispatch(checkAuthTimeout(3600));
@@ -219,7 +263,8 @@ export const getUserProfile = () => {
 
 export const authCheckState = () => {
   return dispatch => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    let auth_data = JSON.parse(localStorage.getItem("Authorization"));
+    let user = JSON.parse(localStorage.getItem("user"));
     if (user === undefined || user === null) {
       dispatch(logout());
     } else {
@@ -227,7 +272,17 @@ export const authCheckState = () => {
       if (expirationDate <= new Date()) {
         dispatch(logout());
       } else {
-        dispatch(authSuccess(user));
+        // auth_data = auth_data.response.user_data;
+        // auth_data.token = user.token;
+        // auth_data.username = user.username;
+
+        const userData = auth_data.response.user_data; 
+        
+          userData.token = user.token;
+          userData.username = user.username;
+         
+
+        dispatch(authSuccess(userData));
         // dispatch(
         //   checkAuthTimeout(
         //     (expirationDate.getTime() - new Date().getTime()) / 1000
